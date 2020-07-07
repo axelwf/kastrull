@@ -1,5 +1,6 @@
-import QtQuick 2.13
-import QtQuick.Controls 2.13
+import QtQuick 2.14
+import QtQuick.Controls 2.14
+import QtQuick.Layouts 1.14
 import "./qml/mainView"
 
 ApplicationWindow {
@@ -10,6 +11,33 @@ ApplicationWindow {
     width: 405
     visibility: ApplicationWindow.AutomaticVisibility
     title: qsTr("Kastrull")
+
+
+    header: ToolBar {
+            RowLayout {
+                anchors.fill: parent
+                ToolButton {
+                    text: qsTr("‹")
+                    onClicked: stack.pop()
+                }
+                Label {
+                    text: "Title"
+                    elide: Label.ElideRight
+                    horizontalAlignment: Qt.AlignHCenter
+                    verticalAlignment: Qt.AlignVCenter
+                    Layout.fillWidth: true
+                }
+                ToolButton {
+                    text: qsTr("⋮")
+                    onClicked: menu.open()
+                }
+            }
+        }
+
+    StackView {
+        id: stack
+        anchors.fill: parent
+    }
 
     Text {
         id: hej
