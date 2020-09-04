@@ -5,5 +5,7 @@
         <file>qml/mainView/Splashscreen.qml</file>
         <file>MainPageVertical.qml</file>
         <file>BeverageDialogue.qml</file>
+        <file>BeerDialogue.qml</file>
+        <file>WineDialogue.qml</file>
     </qresource>
 </RCC>

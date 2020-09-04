@@ -10,9 +10,11 @@ Grid {
     property string picSource: ""
     property int defaultSize: 10
     property int maxSize: 50
+    property int sizeStepSize: 4
     property int selectedSize: defaultSize
     property real defaultAlcPerc: 10
     property real maxAlcPerc: 50
+    property real alcPercStepSize: 0.1
     property real selectedAlcPerc: defaultAlcPerc
     property int defaultTimeOffset: 0 //resultion: 1 unit = 15 minutes
     property int maxTimeOffset: 48
@@ -38,6 +40,7 @@ Grid {
                 handle.implicitWidth: 20
                 value: selectedSize
                 to: maxSize
+                stepSize: sizeStepSize
                 onValueChanged: selectedSize = value
             }
 
@@ -66,7 +69,7 @@ Grid {
                 handle.implicitWidth: 20
                 value: selectedAlcPerc
                 to: maxAlcPerc
-                stepSize: 0.1
+                stepSize: alcPercStepSize
                 onValueChanged: selectedAlcPerc = Math.round(value*10)/10
             }
 
@@ -117,7 +120,10 @@ Grid {
             height: parent.width * 0.2
             text: qsTr("DRINK!")
             font.pixelSize: 30
-            onClicked: appWindow.addBeverage(selectedSize, selectedAlcPerc, selectedTimeOffset)
+            onClicked: {
+                appWindow.addBeverage(selectedSize, selectedAlcPerc, selectedTimeOffset)
+                stack.pop()
+            }
         }
     }
 }

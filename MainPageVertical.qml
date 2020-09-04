@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.15
 
 Grid {
    rows: 3
@@ -7,36 +7,63 @@ Grid {
    Rectangle {
        width: parent.width
        height: parent.height * 0.5
-       color: "red"
+       color: "transparent"
 
        Text {
+           id: alcLevelText
            anchors.centerIn: parent
            text: appWindow.alcLevel
            font.pixelSize: 90
        }
+
+       Text {
+           anchors {
+                horizontalCenter: alcLevelText.horizontalCenter
+                top: alcLevelText.bottom
+                topMargin: 10
+           }
+           text: "Number of drinks consumed: " + appWindow.drinkList.count
+           font.pixelSize: 20
+       }
+
+
    }
 
    Row {
        height: parent.height * 0.25
        width: parent.width
+       spacing: parent.width * 0.05
+       leftPadding: parent.width * 0.025
        Rectangle {
-           height: parent.height
-           width: parent.width * 0.5
-           color: "blue"
+           height: parent.height * 0.9
+           width: parent.width * 0.45
+           color: "transparent"
+           border.color: "teal"
+           border.width: 2
+           radius: height * 0.2
            Text {
-                text: "Have a beer"
+               anchors.centerIn: parent
+               text: "BEER"
            }
            MouseArea {
                anchors.fill: parent
-               onClicked: stack.push("qrc:/BeverageDialogue.qml")
+               onClicked: stack.push("qrc:/BeerDialogue.qml")
            }
        }
        Rectangle {
-           height: parent.height
-           width: parent.width * 0.5
-           color: "green"
+           height: parent.height * 0.9
+           width: parent.width * 0.45
+           color: "transparent"
+           border.color: "teal"
+           border.width: 2
+           radius: height * 0.2
            Text {
-                text: "Drink some wine"
+               anchors.centerIn: parent
+               text: "WINE"
+           }
+           MouseArea {
+               anchors.fill: parent
+               onClicked: stack.push("qrc:/WineDialogue.qml")
            }
        }
    }
@@ -44,20 +71,38 @@ Grid {
    Row {
        height: parent.height * 0.25
        width: parent.width
+       spacing: parent.width * 0.05
+       leftPadding: parent.width * 0.025
        Rectangle {
-           height: parent.height
-           width: parent.width * 0.5
-           color: "purple"
+           height: parent.height * 0.9
+           width: parent.width * 0.45
+           color: "transparent"
+           border.color: "teal"
+           border.width: 2
+           radius: height * 0.2
            Text {
-                text: "SHOT"
+               anchors.centerIn: parent
+               text: "SHOT"
+           }
+           MouseArea {
+               anchors.fill: parent
+               onClicked: stack.push("qrc:/BeerDialogue.qml")
            }
        }
        Rectangle {
-           height: parent.height
-           width: parent.width * 0.5
-           color: "yellow"
+           height: parent.height * 0.9
+           width: parent.width * 0.45
+           color: "transparent"
+           border.color: "teal"
+           border.width: 2
+           radius: height * 0.2
            Text {
-                text: "GROGG"
+               anchors.centerIn: parent
+               text: "GROGG"
+           }
+           MouseArea {
+               anchors.fill: parent
+               onClicked: stack.push("qrc:/BeerDialogue.qml")
            }
        }
    }

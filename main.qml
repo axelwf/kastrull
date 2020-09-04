@@ -12,15 +12,20 @@ ApplicationWindow {
     visibility: ApplicationWindow.AutomaticVisibility
     title: qsTr("Kastrull")
 
+    property alias drinkList: drinkList
+
     //variables
     property real alcLevel: 0.25
     property string sizeUnit: "oz"
-    property ListModel drinkList
 
+    //data structures
+    ListModel{
+        id: drinkList
+    }
     //functions
     function addBeverage(size, perc, timeOffset) {
         //calculate absolute time
-        drinkList.append()
+        drinkList.append({"size": size, "perc": perc, "time": timeOffset})
     }
 
     header: ToolBar {
