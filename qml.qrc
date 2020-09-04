@@ -3,5 +3,7 @@
         <file>main.qml</file>
         <file>qtquickcontrols2.conf</file>
         <file>qml/mainView/Splashscreen.qml</file>
+        <file>MainPageVertical.qml</file>
+        <file>BeverageDialogue.qml</file>
     </qresource>
 </RCC>

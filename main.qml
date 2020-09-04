@@ -12,6 +12,16 @@ ApplicationWindow {
     visibility: ApplicationWindow.AutomaticVisibility
     title: qsTr("Kastrull")
 
+    //variables
+    property real alcLevel: 0.25
+    property string sizeUnit: "oz"
+    property ListModel drinkList
+
+    //functions
+    function addBeverage(size, perc, timeOffset) {
+        //calculate absolute time
+        drinkList.append()
+    }
 
     header: ToolBar {
             RowLayout {
@@ -19,17 +29,20 @@ ApplicationWindow {
                 ToolButton {
                     text: qsTr("‹")
                     onClicked: stack.pop()
+                    font.pixelSize: 36
                 }
                 Label {
-                    text: "Title"
+                    text: "Kastrull"
                     elide: Label.ElideRight
                     horizontalAlignment: Qt.AlignHCenter
                     verticalAlignment: Qt.AlignVCenter
                     Layout.fillWidth: true
+                    font.pixelSize: 24
                 }
                 ToolButton {
                     text: qsTr("⋮")
                     onClicked: menu.open()
+                    font.pixelSize: 36
                 }
             }
         }
@@ -37,13 +50,7 @@ ApplicationWindow {
     StackView {
         id: stack
         anchors.fill: parent
-    }
-
-    Text {
-        id: hej
-        text: qsTr("Hej Erik")
-        font.pixelSize: 42
-        anchors.centerIn: parent
+        initialItem: MainPageVertical{}
     }
 
     Splashscreen {
@@ -58,18 +65,8 @@ ApplicationWindow {
         interval: 2000
     }
 
-    Component.onCompleted: splashTimer.start()
+    Component.onCompleted: {
+        splashTimer.start()
+    }
 
-//    ScrollView {
-//        anchors.fill: parent
-
-//        ListView {
-//            width: parent.width
-//            model: 20
-//            delegate: ItemDelegate {
-//                text: "Item " + (index + 1)
-//                width: parent.width
-//            }
-//        }
-//    }
 }
