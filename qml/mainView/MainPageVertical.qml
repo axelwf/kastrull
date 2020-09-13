@@ -1,30 +1,30 @@
 import QtQuick 2.15
+import "../components"
 
-Grid {
-   rows: 3
-   columns: 1
+Item {
+    id: root
 
-   Rectangle {
-       width: parent.width
-       height: parent.height * 0.5
-       color: "transparent"
+    Item {
+        id: alcLevelContainer
+        width: parent.width
+        height: parent.height * 0.5
 
-       Text {
-           id: alcLevelText
-           anchors.centerIn: parent
-           text: appWindow.alcLevel
-           font.pixelSize: 90
-       }
+        Text {
+            id: alcLevelText
+            anchors.centerIn: parent
+            text: main.alcLevel
+            font.pixelSize: 90
+        }
 
-       Text {
-           anchors {
+        Text {
+            anchors {
                 horizontalCenter: alcLevelText.horizontalCenter
                 top: alcLevelText.bottom
                 topMargin: 10
-           }
-           text: "Number of drinks consumed: " + appWindow.drinkList.count
-           font.pixelSize: 20
-       }
+            }
+            text: "Number of drinks consumed: " + main.drinkList.count
+            font.pixelSize: 20
+        }
 
 
    }

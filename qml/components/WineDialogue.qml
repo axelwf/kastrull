@@ -5,7 +5,7 @@ BeverageDialogue {
     defaultSize: 8
     maxSize: 25
     sizeStepSize: 1
-    defaultAlcPerc: 5
-    maxAlcPerc: 15
+    defaultAlcPerc: 10
+    maxAlcPerc: 25
     alcPercStepSize: 1
 }

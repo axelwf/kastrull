@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.14
 import "./qml/mainView"
 
 ApplicationWindow {
-    id: appWindow
+    id: main
     visible: true
     // 16:9 portrait
     height: 720
@@ -60,8 +60,8 @@ ApplicationWindow {
 
     Splashscreen {
         id: splash
-        width: appWindow.width
-        height: appWindow.height
+        width: main.width
+        height: main.height
     }
 
     Timer {
