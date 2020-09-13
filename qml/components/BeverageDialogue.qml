@@ -58,7 +58,7 @@ Grid {
                 width: root.width * 0.2
                 text: qsTr(Math.round(selectedSize*100)/100 + " " + main.sizeUnit)
                 font.pixelSize: 30
-                color: "white"
+                color: colors.primaryText
             }
         }
 
@@ -88,7 +88,7 @@ Grid {
                 width: root.width * 0.2
                 text: qsTr(selectedAlcPerc + " %")
                 font.pixelSize: 30
-                color: "white"
+                color: colors.primaryText
             }
         }
     }
@@ -115,7 +115,7 @@ Grid {
                 width: root.width * 0.2
                 text: selectedTimeOffset === 0? qsTr("Now"): qsTr(selectedTimeOffset * 15 + " min")
                 font.pixelSize: 30
-                color: "white"
+                color: colors.primaryText
             }
         }
     }
