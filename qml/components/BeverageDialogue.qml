@@ -46,7 +46,7 @@ Grid {
 
             Text {
                 width: root.width * 0.2
-                text: qsTr(selectedSize + " " + appWindow.sizeUnit)
+                text: qsTr(selectedSize + " " + main.sizeUnit)
                 font.pixelSize: 30
                 color: "white"
             }
@@ -121,7 +121,7 @@ Grid {
             text: qsTr("DRINK!")
             font.pixelSize: 30
             onClicked: {
-                appWindow.addBeverage(selectedSize, selectedAlcPerc, selectedTimeOffset)
+                main.addBeverage(selectedSize, selectedAlcPerc, selectedTimeOffset)
                 stack.pop()
             }
         }

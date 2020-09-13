@@ -7,5 +7,6 @@
         <file>qml/components/BeverageDialogue.qml</file>
         <file>qml/components/WineDialogue.qml</file>
         <file>qml/mainView/MainPageVertical.qml</file>
+        <file>qml/components/MainButton.qml</file>
     </qresource>
 </RCC>

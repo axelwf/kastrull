@@ -25,85 +25,41 @@ Item {
             text: "Number of drinks consumed: " + main.drinkList.count
             font.pixelSize: 20
         }
-
-
    }
 
-   Row {
-       height: parent.height * 0.25
-       width: parent.width
-       spacing: parent.width * 0.05
-       leftPadding: parent.width * 0.025
-       Rectangle {
-           height: parent.height * 0.9
-           width: parent.width * 0.45
-           color: "transparent"
-           border.color: "teal"
-           border.width: 2
-           radius: height * 0.2
-           Text {
-               anchors.centerIn: parent
-               text: "BEER"
-           }
-           MouseArea {
-               anchors.fill: parent
-               onClicked: stack.push("qrc:/BeerDialogue.qml")
-           }
-       }
-       Rectangle {
-           height: parent.height * 0.9
-           width: parent.width * 0.45
-           color: "transparent"
-           border.color: "teal"
-           border.width: 2
-           radius: height * 0.2
-           Text {
-               anchors.centerIn: parent
-               text: "WINE"
-           }
-           MouseArea {
-               anchors.fill: parent
-               onClicked: stack.push("qrc:/WineDialogue.qml")
-           }
-       }
-   }
+   Grid {
+       id: buttonGrid
+       rows: 2
+       columns: 2
 
-   Row {
-       height: parent.height * 0.25
        width: parent.width
-       spacing: parent.width * 0.05
-       leftPadding: parent.width * 0.025
-       Rectangle {
-           height: parent.height * 0.9
-           width: parent.width * 0.45
-           color: "transparent"
-           border.color: "teal"
-           border.width: 2
-           radius: height * 0.2
-           Text {
-               anchors.centerIn: parent
-               text: "SHOT"
-           }
-           MouseArea {
-               anchors.fill: parent
-               onClicked: stack.push("qrc:/BeerDialogue.qml")
-           }
+       height: parent.height * 0.5
+       anchors {
+           top: alcLevelContainer.bottom
        }
-       Rectangle {
-           height: parent.height * 0.9
-           width: parent.width * 0.45
-           color: "transparent"
-           border.color: "teal"
-           border.width: 2
-           radius: height * 0.2
-           Text {
-               anchors.centerIn: parent
-               text: "GROGG"
-           }
-           MouseArea {
-               anchors.fill: parent
-               onClicked: stack.push("qrc:/BeerDialogue.qml")
-           }
+       horizontalItemAlignment: Grid.AlignHCenter
+       verticalItemAlignment: Grid.AlignVCenter
+       leftPadding: spacing
+       spacing: 10
+
+       MainButton {
+           text: "BEER"
+           pushObject: "qrc:/qml/components/BeerDialogue.qml"
+       }
+
+       MainButton {
+           text: "WINE"
+           pushObject: "qrc:/qml/components/WineDialogue.qml"
+       }
+
+       MainButton {
+           text: "SHOT"
+           pushObject: "qrc:/qml/components/BeerDialogue.qml"
+       }
+
+       MainButton {
+           text: "DRINK"
+           pushObject: "qrc:/qml/components/BeerDialogue.qml"
        }
    }
 }
