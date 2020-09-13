@@ -8,5 +8,6 @@
         <file>qml/components/WineDialogue.qml</file>
         <file>qml/mainView/MainPageVertical.qml</file>
         <file>qml/components/MainButton.qml</file>
+        <file>qml/components/ShotDialogue.qml</file>
     </qresource>
 </RCC>

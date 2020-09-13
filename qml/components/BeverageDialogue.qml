@@ -8,22 +8,32 @@ Grid {
     columns: 1
 
     property string picSource: ""
-    property int defaultSize: 10
+    property real defaultSize: 10
     property int maxSize: 50
-    property int sizeStepSize: 4
-    property int selectedSize: defaultSize
+    property real sizeStepSize: 4
+    property real selectedSize: defaultSize
     property real defaultAlcPerc: 10
     property real maxAlcPerc: 50
+    property real minAlcPerc: 2
     property real alcPercStepSize: 0.1
     property real selectedAlcPerc: defaultAlcPerc
     property int defaultTimeOffset: 0 //resultion: 1 unit = 15 minutes
     property int maxTimeOffset: 48
     property int selectedTimeOffset: defaultTimeOffset
 
+
+
+
     Item {
         id: imageHolder
         width: parent.width
         height: parent.height * 0.3
+        Image {
+            width: parent.width*0.4
+            height: parent.height
+            anchors.centerIn: parent
+            source: picSource
+        }
     }
 
     Item {
@@ -46,7 +56,7 @@ Grid {
 
             Text {
                 width: root.width * 0.2
-                text: qsTr(selectedSize + " " + main.sizeUnit)
+                text: qsTr(Math.round(selectedSize*100)/100 + " " + main.sizeUnit)
                 font.pixelSize: 30
                 color: "white"
             }
@@ -68,6 +78,7 @@ Grid {
                 handle.implicitHeight: 20
                 handle.implicitWidth: 20
                 value: selectedAlcPerc
+                from: minAlcPerc
                 to: maxAlcPerc
                 stepSize: alcPercStepSize
                 onValueChanged: selectedAlcPerc = Math.round(value*10)/10

@@ -54,12 +54,12 @@ Item {
 
        MainButton {
            text: "SHOT"
-           pushObject: "qrc:/qml/components/BeerDialogue.qml"
+           pushObject: "qrc:/qml/components/ShotDialogue.qml"
        }
 
        MainButton {
-           text: "DRINK"
-           pushObject: "qrc:/qml/components/BeerDialogue.qml"
+           text: "Cocktail"
+           pushObject: "qrc:/qml/components/ShotDialogue.qml"
        }
    }
 }
