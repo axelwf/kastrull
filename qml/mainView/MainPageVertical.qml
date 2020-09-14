@@ -14,6 +14,7 @@ Item {
             anchors.centerIn: parent
             text: main.alcLevel
             font.pixelSize: 90
+            color: colors.primaryText
         }
 
         Text {
@@ -24,6 +25,7 @@ Item {
             }
             text: "Number of drinks consumed: " + main.drinkList.count
             font.pixelSize: 20
+            color: colors.primaryText
         }
    }
 
@@ -37,9 +39,8 @@ Item {
        anchors {
            top: alcLevelContainer.bottom
        }
-       horizontalItemAlignment: Grid.AlignHCenter
-       verticalItemAlignment: Grid.AlignVCenter
        leftPadding: spacing
+       topPadding: spacing
        spacing: 10
 
        MainButton {

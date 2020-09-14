@@ -10,12 +10,13 @@ Rectangle {
     height: (buttonGrid.height - 3 * buttonGrid.spacing) / 2
     width: (buttonGrid.width - 3 * buttonGrid.spacing) / 2
     color: "transparent"
-    border.color: "teal"
+    border.color: colors.primaryColor
     border.width: 2
     radius: height * 0.2
     Text {
         anchors.centerIn: parent
         text: root.text
+        color: colors.primaryText
     }
     MouseArea {
         anchors.fill: parent
