@@ -9,5 +9,6 @@
         <file>qml/mainView/MainPageVertical.qml</file>
         <file>qml/components/MainButton.qml</file>
         <file>qml/components/ShotDialogue.qml</file>
+        <file>qml/components/CocktailDialogue.qml</file>
     </qresource>
 </RCC>

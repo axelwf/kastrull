@@ -18,15 +18,17 @@ ApplicationWindow {
     property real alcLevel: 0.25
     property string sizeUnit: "oz"
 
+
     //data structures
     ListModel{
         id: drinkList
     }
     //functions
-    function addBeverage(size, perc, timeOffset) {
+    function addBeverage(size, perc, selectedDrinkStart) {
         //calculate absolute time
-        drinkList.append({"size": size, "perc": perc, "time": timeOffset})
+        drinkList.append({"size": size, "perc": perc, "time": selectedDrinkStart})
     }
+
 
     header: ToolBar {
             RowLayout {

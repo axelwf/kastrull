@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.15
 
+
 Grid {
     id: root
 
@@ -20,7 +21,7 @@ Grid {
     property int defaultTimeOffset: 0 //resultion: 1 unit = 15 minutes
     property int maxTimeOffset: 48
     property int selectedTimeOffset: defaultTimeOffset
-
+    property date selectedDrinkStart: new Date()
 
 
 
@@ -45,7 +46,7 @@ Grid {
             anchors.centerIn: parent
             spacing: 30
             Slider {
-                width: root.width * 0.6
+                width: root.width * 0.5
                 handle.implicitHeight: 20
                 handle.implicitWidth: 20
                 value: selectedSize
@@ -57,7 +58,7 @@ Grid {
             Text {
                 width: root.width * 0.2
                 text: qsTr(Math.round(selectedSize*100)/100 + " " + main.sizeUnit)
-                font.pixelSize: 30
+                font.pixelSize: 25
                 color: "white"
             }
         }
@@ -74,7 +75,7 @@ Grid {
             anchors.centerIn: parent
             spacing: 30
             Slider {
-                width: root.width * 0.6
+                width: root.width * 0.5
                 handle.implicitHeight: 20
                 handle.implicitWidth: 20
                 value: selectedAlcPerc
@@ -87,7 +88,7 @@ Grid {
             Text {
                 width: root.width * 0.2
                 text: qsTr(selectedAlcPerc + " %")
-                font.pixelSize: 30
+                font.pixelSize: 25
                 color: "white"
             }
         }
@@ -102,19 +103,23 @@ Grid {
             anchors.centerIn: parent
             spacing: 30
             Slider {
-                width: root.width * 0.6
+                width: root.width * 0.5
                 handle.implicitHeight: 20
                 handle.implicitWidth: 20
                 value: selectedTimeOffset
                 from: -maxTimeOffset
                 to: 0
-                onValueChanged: selectedTimeOffset = value
+                onValueChanged: {
+                    selectedTimeOffset = value
+                    console.log(selectedTimeOffset)
+//                    timeToHoursAndMinutes()
+                }
             }
 
             Text {
                 width: root.width * 0.2
-                text: selectedTimeOffset === 0? qsTr("Now"): qsTr(selectedTimeOffset * 15 + " min")
-                font.pixelSize: 30
+                text: selectedTimeOffset === 0? qsTr("Now"): qsTr("-" + -Math.ceil(selectedTimeOffset/4)+" h " + -(selectedTimeOffset*15 - Math.ceil(selectedTimeOffset/4)*60) + " m")
+                font.pixelSize: 25
                 color: "white"
             }
         }
@@ -132,7 +137,10 @@ Grid {
             text: qsTr("DRINK!")
             font.pixelSize: 30
             onClicked: {
-                main.addBeverage(selectedSize, selectedAlcPerc, selectedTimeOffset)
+                var today = new Date()
+                selectedDrinkStart = new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours()+Math.ceil(selectedTimeOffset/4), today.getMinutes()+(selectedTimeOffset*15 - Math.ceil(selectedTimeOffset/4)*60), today.getSeconds())
+//                console.log(selectedDrinkStart)
+                main.addBeverage(selectedSize, selectedAlcPerc, selectedDrinkStart)
                 stack.pop()
             }
         }
