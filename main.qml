@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.13
 import "./qml/mainView"
 import "./qml/data"
 
+
 ApplicationWindow {
     id: main
     visible: true
@@ -17,7 +18,40 @@ ApplicationWindow {
 
     //variables
     property real alcLevel: 0.25
-    property string sizeUnit: "oz"
+    property bool alcLevelIsRising: true
+
+    property string unitSystem : "US"
+    property string sizeUnit: {
+        if(unitSystem == "US"){
+            "oz"
+        }
+        else {
+            "ml"
+        }
+    }
+    property int profileWeight : 178
+    property bool profileIsMan: true
+    property int drinkTimeBeer: 30 //min
+    property real metabolismRate : {
+        if(profileIsMan) {
+            0.015
+        }
+        else {
+            0.017
+        }
+    }
+    property real bodyWaterConstant : {
+        if(profileIsMan) {
+            0.58
+        }
+        else {
+            0.49
+        }
+    }
+
+
+//    property var now : new Date()
+
 
 
     //data structures
@@ -30,9 +64,11 @@ ApplicationWindow {
     }
 
     //functions
-    function addBeverage(size, perc, selectedDrinkStart) {
-        //calculate absolute time
-        drinkList.append({"size": size, "perc": perc, "time": selectedDrinkStart})
+    function addBeverage(size, perc, selectedDrinkStart,drinkType,unitSystem) {
+        var standardDrinks
+        standardDrinks = convertToStandardDrinks(size,perc,unitSystem)
+        drinkList.append({"size": size, "perc": perc, "time": selectedDrinkStart, "drinkType" : drinkType, "standardDrinks" : standardDrinks})
+        // listan maste sorteras pa klockslag, finns det inget snabbsatt att gora det pa? typ drinkList.sort(time)
     }
 
     function calculatefylla() {
@@ -49,6 +85,81 @@ ApplicationWindow {
 
     Colors {
         id: colors
+    }
+
+    function bloodAlcContent(){
+        var now
+        var startTime
+        now = new Date()
+        var consumtionArray = []
+
+
+        for(var n = 0 ; n < drinkList.count;n++){
+//            console.log(drinkList.get(n).size)
+//            console.log(drinkList.get(n).perc)
+//            console.log(drinkList.get(n).time)
+//            console.log(drinkList.get(n).drinkType)
+//            console.log(metabolismRate)
+            if (n === 0){
+                startTime = drinkList.get(n).time
+            }
+
+            var consumptionRate
+            if (drinkList.drinkType === "Beer"){
+                consumptionRate = 30 //min
+            }
+
+
+
+
+            if (n < drinkList.count){ //check if not last drink
+                var drinkTime
+                drinkTime = drinkList.get(n).time
+                var nextDrinkTime
+                nextDrink = drinkHistory.get(n+1).time
+                var timeDiff // diff in 1min intervalls
+                timeDiff = Math.floor((nextDrink-start_time)/(1000*60))
+//                for(time = start_time; ,)
+            }
+
+        }
+    }
+
+    function widmark(standardDrinks,drinkingPeriod) {
+        var WT // body weight in kg
+        if (unitSystem==="US"){
+            WT = profileWeight*0.453592
+        }
+        else {
+            WT = profileWeight
+        }
+
+        var bac =(0.806*standardDrinks*1.2)/(bodyWaterConstant*WT-metabolismRate*drinkingPeriod)
+
+        return {bac}
+
+    }
+
+    function convertToStandardDrinks(size,perc,unitSystem){
+        // converts to number of standard drinks. One standard drink is 10gr of ethanol
+        var standardDrinks
+        var volym // ml
+        var volym_ethanol
+        var mass_ethanol
+        var density_ethanol = 0.789 // gram per ml
+
+        if (unitSystem === "US") {
+            volym = size*29.5735
+        }
+        else{
+            volym = size
+        }
+
+        volym_ethanol = volym * perc // ml
+        mass_ethanol = volym_ethanol * density_ethanol // gram
+        standardDrinks = mass_ethanol / 10
+        console.log(standardDrinks)
+        return{standardDrinks}
     }
 
     header: ToolBar {
