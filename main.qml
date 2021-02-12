@@ -16,6 +16,10 @@ ApplicationWindow {
 
     property alias drinkList: drinkList
 
+    Variable {
+        id: variable
+    }
+
     //variables
     property real alcLevel: 0.25
     property bool alcLevelIsRising: true
@@ -29,25 +33,8 @@ ApplicationWindow {
             "ml"
         }
     }
-    property int profileWeight : 178
-    property bool profileIsMan: true
+
     property int drinkTimeBeer: 30 //min
-    property real metabolismRate : {
-        if(profileIsMan) {
-            0.015
-        }
-        else {
-            0.017
-        }
-    }
-    property real bodyWaterConstant : {
-        if(profileIsMan) {
-            0.58
-        }
-        else {
-            0.49
-        }
-    }
 
 
 //    property var now : new Date()
@@ -75,6 +62,15 @@ ApplicationWindow {
         //calc nytt värde
         //alcLevel = 0.75
         alcLevelHistory.append()
+
+        if (alcLevel == 0){
+            saveToFile()
+            drinkList.clear()
+        }
+    }
+
+    function saveToFile(){
+        //spara
     }
 
     Timer {
