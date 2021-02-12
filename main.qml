@@ -19,9 +19,8 @@ ApplicationWindow {
     property real alcLevel: 0.25
     property string sizeUnit: "oz"
 
-
     //data structures
-    ListModel{
+    ListModel {
         id: drinkList
     }
 
@@ -38,7 +37,7 @@ ApplicationWindow {
     function calculatefylla() {
         //calc nytt värde
         //alcLevel = 0.75
-        alcLevelHistory.append()
+        //alcLevelHistory.append()
     }
 
     Timer {
@@ -49,7 +48,7 @@ ApplicationWindow {
 
     Colors {
         id: colors
-    }
+    }  
 
     header: ToolBar {
             RowLayout {
@@ -90,7 +89,7 @@ ApplicationWindow {
     Timer {
         id: splashTimer
         onTriggered: splash.opacity = 0
-        interval: 2000
+        interval: 1000
     }
 
     onClosing: {

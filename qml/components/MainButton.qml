@@ -6,6 +6,7 @@ Rectangle {
     property string picSource: ""
     property string pushObject: ""
     property int margin: 10
+    property int fontSize: 36
 
     height: (buttonGrid.height - 3 * buttonGrid.spacing) / 2
     width: (buttonGrid.width - 3 * buttonGrid.spacing) / 2
@@ -17,6 +18,7 @@ Rectangle {
         anchors.centerIn: parent
         text: root.text
         color: colors.primaryText
+        font.pixelSize: fontSize
     }
     MouseArea {
         anchors.fill: parent
