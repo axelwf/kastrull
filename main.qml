@@ -25,10 +25,26 @@ ApplicationWindow {
         id: drinkList
     }
 
+    ListModel {
+        id: alcLevelHistory
+    }
+
     //functions
     function addBeverage(size, perc, selectedDrinkStart) {
         //calculate absolute time
         drinkList.append({"size": size, "perc": perc, "time": selectedDrinkStart})
+    }
+
+    function calculatefylla() {
+        //calc nytt värde
+        //alcLevel = 0.75
+        alcLevelHistory.append()
+    }
+
+    Timer {
+        running: true
+        interval: 60000
+        onTriggered: calculatefylla()
     }
 
     Colors {

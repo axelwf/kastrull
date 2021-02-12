@@ -4,9 +4,7 @@ import "../components"
 Item {
     id: root
 
-    Rectangle {
-        color: "transparent"
-        border.color: "green"
+    Item {
         id: alcLevelContainer
         width: parent.width
         height: parent.height * 0.5
@@ -32,35 +30,30 @@ Item {
             color: "transparent"
             border.color: "blue"
             width: parent.width
-            height: parent.height / 2
+            height: parent.height
             anchors.top: alcLevelTextHolder.bottom
 
-            Item {
-                id: firstRowHolder
-                height: parent.height / 2
-                width: parent.width
+            Row {
+                id: drinkRow
+                anchors.centerIn: parent
 
-                Row {
-                    id: firstRow
-                    anchors.centerIn: parent
+                Repeater {
+                    id: drinks
+                    model: 4
 
-                    Repeater {
-                        id: drinks
-                        model: 5
+                    Item {
+                        id: drinkHolder
 
-                        Image {
-                            height: firstRowHolder.height * 0.9
-                            anchors.verticalCenter: parent.verticalCenter
-                            fillMode: Image.PreserveAspectFit
-                            source: "qrc:/images/beer.PNG"
-                        }
+                    }
+
+                    Image {
+                        height: firstRowHolder.height * 0.9
+                        anchors.verticalCenter: parent.verticalCenter
+                        fillMode: Image.PreserveAspectFit
+                        source: "qrc:/images/beer.PNG"
                     }
                 }
             }
-
-
-
-
 
 //            Text {
 //                anchors.centerIn: parent
