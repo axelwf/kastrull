@@ -4,29 +4,75 @@ import "../components"
 Item {
     id: root
 
-    Item {
+    Rectangle {
+        color: "transparent"
+        border.color: "green"
         id: alcLevelContainer
         width: parent.width
         height: parent.height * 0.5
 
-        Text {
-            id: alcLevelText
-            anchors.centerIn: parent
-            text: main.alcLevel
-            font.pixelSize: 90
-            color: colors.primaryText
+        Rectangle {
+            id: alcLevelTextHolder
+            color: "transparent"
+            border.color: "white"
+            width: parent.width
+            height: parent.height / 2
+
+            Text {
+                id: alcLevelText
+                anchors.centerIn: parent
+                text: main.alcLevel
+                font.pixelSize: 90
+                color: colors.primaryText
+            }
         }
 
-        Text {
-            anchors {
-                horizontalCenter: alcLevelText.horizontalCenter
-                top: alcLevelText.bottom
-                topMargin: 10
+        Rectangle {
+            id: consumedDrinksHolder
+            color: "transparent"
+            border.color: "blue"
+            width: parent.width
+            height: parent.height / 2
+            anchors.top: alcLevelTextHolder.bottom
+
+            Item {
+                id: firstRowHolder
+                height: parent.height / 2
+                width: parent.width
+
+                Row {
+                    id: firstRow
+                    anchors.centerIn: parent
+
+                    Repeater {
+                        id: drinks
+                        model: 5
+
+                        Image {
+                            height: firstRowHolder.height * 0.9
+                            anchors.verticalCenter: parent.verticalCenter
+                            fillMode: Image.PreserveAspectFit
+                            source: "qrc:/images/beer.PNG"
+                        }
+                    }
+                }
             }
-            text: "Number of drinks consumed: " + main.drinkList.count
-            font.pixelSize: 20
-            color: colors.primaryText
+
+
+
+
+
+//            Text {
+//                anchors.centerIn: parent
+//                text: "Number of drinks consumed: " + main.drinkList.count
+//                font.pixelSize: 20
+//                color: colors.primaryText
+//            }
         }
+
+
+
+
    }
 
    Grid {
@@ -60,7 +106,7 @@ Item {
 
        MainButton {
            text: "Cocktail"
-           pushObject: "qrc:/qml/components/CocktialDialogue.qml"
+           pushObject: "qrc:/qml/components/CocktailDialogue.qml"
        }
    }
 }
