@@ -52,21 +52,93 @@ ApplicationWindow {
 
     //functions
     function addBeverage(size, perc, selectedDrinkStart,drinkType,unitSystem) {
-        var standardDrinks
-        standardDrinks = convertToStandardDrinks(size,perc,unitSystem)
-        drinkList.append({"size": size, "perc": perc, "time": selectedDrinkStart, "drinkType" : drinkType, "standardDrinks" : standardDrinks})
+        var alcMass
+        alcMass = convertToMass(size,perc,unitSystem)
+        var drinkCurve
+        drinkCurve = calculateCurve(size,perc,selectedDrinkStart,drinkType,alcMass)
+        drinkList.append({"size": size, "perc": perc, "time": selectedDrinkStart, "drinkType" : drinkType, "alcMass" : alcMass,"drinkCurve" : drinkCurve})
         // listan maste sorteras pa klockslag, finns det inget snabbsatt att gora det pa? typ drinkList.sort(time)
+        drunkList = calculateHistory(drinkList)
+
     }
 
-    function calculatefylla() {
-        //calc nytt värde
-        //alcLevel = 0.75
-        alcLevelHistory.append()
-
-        if (alcLevel == 0){
-            saveToFile()
-            drinkList.clear()
+    function calculateCurve(size,perc,selectedDrinkStart,drinkType,alcMass) {
+        var consumptionRate
+        if (drinkList.drinkType === "Beer"){
+            consumptionRate = 30 //min
         }
+        else if (drinkList.drinkType === "Wine"){
+            consumptionRate = 30 //min
+        }
+        else if (drinkList.drinkType === "Shot"){
+            consumptionRate = 10 //min
+        }
+        else if (drinkList.drinkType === "Cocktail"){
+            consumptionRate = 20 //min
+        }
+
+        var drinkCurve
+        var bac = 0
+        var time = selectedDrinkStart
+        var end = Date()+24*60 // 24 timmar fran nu
+
+        drinkCurve.append({"time":time, "bac":bac}) //Lagg till nollan
+
+        for (time = selectedDrinkStart ; time < (Date()+24+60); time++) {
+            drinkingPeriod = time - selectedDrinkStart // i minuter
+
+            var alcMassScaled
+            if (drinkingPeriod > consumptionRate)
+                alcMassScaled = alcMass
+            else
+                alcMassScaled = drinkingPeriod / consumptionRate
+
+
+            bac = widmark(alcMassScaled,drinkingPeriod)
+            if (bac>= 0)
+                drinkCurve.append({"time":time, "bac":bac})
+
+
+        }
+    }
+
+    function widmark(alcMass,drinkingPeriod) {
+        var WT // body weight in kg
+        if (unitSystem==="US"){
+            WT = profileWeight*0.453592
+        }
+        else {
+            WT = profileWeight
+        }
+
+        var bac = alcMass/(bodyWaterConstant*WT)-metabolismRate*drinkingPeriod/60
+
+        return {bac}
+
+
+    }
+
+
+    function calculateHistory(drinkList) {
+        var startOfPeriod = drinkList.get(0).time
+        now = new Date()
+        var endOfPeriod = now + 24*60 //plussar pa 24 timmar
+        var drunkList
+
+        for (var n = startOfPeriod ; n < endOfPeriod;n++) { //loopar pa minuter sedan startOfPeriod
+            var bacTmp = 0
+            for(var x = 0 ; x < drinkList.count;x++) { // loopar pa drinkList
+                if (n >= drinkList.get(x).drinkCurve.get(0).time && n<= drinkList.get(x).drinkCurve.get(drinkList.get(x).drinkCurve.count).time) {
+                    for(var y = 0 ; y < drinkList.get(x).drinkCurve.count;y++){
+                        if (n===drinkList.get(x).drinkCurve.get(y).time) {
+                            bacTmp += drinkList.get(x).drinkCurve.get(y).bac
+                        }
+                    }
+                }
+            }
+            drunkList.append({"time":n, "bac":bacTmp})
+        }
+        return {drunkList}
     }
 
     function saveToFile(){
@@ -83,62 +155,57 @@ ApplicationWindow {
         id: colors
     }  
 
-    function bloodAlcContent(){
-        var now
-        var startTime
-        now = new Date()
-        var consumtionArray = []
+//    function bloodAlcContent(){
+//        var now
+//        var startTime
+//        now = new Date()
+//        startTime =
+//        var consumtionArray = []
 
 
-        for(var n = 0 ; n < drinkList.count;n++){
-//            console.log(drinkList.get(n).size)
-//            console.log(drinkList.get(n).perc)
-//            console.log(drinkList.get(n).time)
-//            console.log(drinkList.get(n).drinkType)
-//            console.log(metabolismRate)
-            if (n === 0){
-                startTime = drinkList.get(n).time
-            }
+//        for(var n = 0 ; n < drinkList.count;n++){
+////            console.log(drinkList.get(n).size)
+////            console.log(drinkList.get(n).perc)
+////            console.log(drinkList.get(n).time)
+////            console.log(drinkList.get(n).drinkType)
+////            console.log(metabolismRate)
 
-            var consumptionRate
-            if (drinkList.drinkType === "Beer"){
-                consumptionRate = 30 //min
-            }
+//            var consumptionRate
+//            if (drinkList.drinkType === "Beer"){
+//                consumptionRate = 30 //min
+//            }
+//            else if (drinkList.drinkType === "Wine"){
+//                consumptionRate = 30 //min
+//            }
+//            else if (drinkList.drinkType === "Shot"){
+//                consumptionRate = 10 //min
+//            }
+//            else if (drinkList.drinkType === "Cocktail"){
+//                consumptionRate = 20 //min
+//            }
 
 
 
+//            if (n < drinkList.count){ //check if not last drink
+//                var drinkTime
+//                drinkTime = drinkList.get(n).time
+//                var nextDrinkTime
+//                nextDrink = drinkHistory.get(n+1).time
+//                var timeDiff // diff in 1min intervalls
+//                timeDiff = Math.floor((nextDrink-start_time)/(1000*60))
+////                for(time = start_time; ,)
+//            }
 
-            if (n < drinkList.count){ //check if not last drink
-                var drinkTime
-                drinkTime = drinkList.get(n).time
-                var nextDrinkTime
-                nextDrink = drinkHistory.get(n+1).time
-                var timeDiff // diff in 1min intervalls
-                timeDiff = Math.floor((nextDrink-start_time)/(1000*60))
-//                for(time = start_time; ,)
-            }
+//        }
+//    }
 
-        }
-    }
 
-    function widmark(standardDrinks,drinkingPeriod) {
-        var WT // body weight in kg
-        if (unitSystem==="US"){
-            WT = profileWeight*0.453592
-        }
-        else {
-            WT = profileWeight
-        }
 
-        var bac =(0.806*standardDrinks*1.2)/(bodyWaterConstant*WT-metabolismRate*drinkingPeriod)
+//    }
 
-        return {bac}
-
-    }
-
-    function convertToStandardDrinks(size,perc,unitSystem){
-        // converts to number of standard drinks. One standard drink is 10gr of ethanol
-        var standardDrinks
+    function convertToMass(size,perc,unitSystem){
+        // converts to alcmass in gram
+        var alcMass
         var volym // ml
         var volym_ethanol
         var mass_ethanol
@@ -152,10 +219,10 @@ ApplicationWindow {
         }
 
         volym_ethanol = volym * perc // ml
-        mass_ethanol = volym_ethanol * density_ethanol // gram
-        standardDrinks = mass_ethanol / 10
-        console.log(standardDrinks)
-        return{standardDrinks}
+        alcMass = volym_ethanol * density_ethanol // gram
+
+        console.log(alcMass)
+        return{alcMass}
     }
 
     header: ToolBar {
