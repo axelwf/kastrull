@@ -44,17 +44,19 @@ ApplicationWindow {
     //data structures
     ListModel {
         id: drinkList
+        // format: ListElement {size: [int]; perc: [real]; time: [timestamp]; drinkType: [int]}
     }
 
     ListModel {
         id: alcLevelHistory
+        // format: ListElement {bac: [real]; time: [timestamp]}
     }
 
     //functions
-    function addBeverage(size, perc, selectedDrinkStart,drinkType,unitSystem) {
+    function addBeverage(size, perc, selectedDrinkStart, drinkType, unitSystem) {
         var standardDrinks
         standardDrinks = convertToStandardDrinks(size,perc,unitSystem)
-        drinkList.append({"size": size, "perc": perc, "time": selectedDrinkStart, "drinkType" : drinkType, "standardDrinks" : standardDrinks})
+        drinkList.append({"size": size, "perc": perc, "time": selectedDrinkStart, "drinkType": drinkType, "standardDrinks": standardDrinks})
         // listan maste sorteras pa klockslag, finns det inget snabbsatt att gora det pa? typ drinkList.sort(time)
     }
 
