@@ -44,10 +44,12 @@ ApplicationWindow {
     //data structures
     ListModel {
         id: drinkList
+        // format: ListElement {size: [int]; perc: [real]; time: [timestamp]; drinkType: [int]}
     }
 
     ListModel {
         id: alcLevelHistory
+        // format: ListElement {bac: [real]; time: [timestamp]}
     }
 
     //functions
