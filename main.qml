@@ -149,6 +149,9 @@ ApplicationWindow {
     function calculateHistory(drinkList) {
         alcLevelHistory.clear()
         var startOfPeriod = drinkList.get(0).time
+        for (var i = 1; i < drinkList.count; i++) {
+            if (drinkList.get(i).time < startOfPeriod) startOfPeriod = drinkList.get(i).time
+        }
         var endOfPeriod = dateToMin(new Date()) + 24*60 //plussar pa 24 timmar
         console.log(drinkList.get(0).drinkCurve.get(0).time)
         for (var n = startOfPeriod ; n < endOfPeriod;n++) { //loopar pa minuter sedan startOfPeriod
