@@ -57,32 +57,29 @@ ApplicationWindow {
     //functions
     function addBeverage(size, perc, selectedDrinkStart,drinkType,unitSystem) {
         var alcMass = convertToMass(size,perc,unitSystem)
-
-
-        console.log(drinkType)
         var drinkCurve = calculateCurve(size,perc,selectedDrinkStart,drinkType,alcMass)
         drinkList.append({"size": size, "perc": perc, "time": selectedDrinkStart, "drinkType" : drinkType, "alcMass" : alcMass,"drinkCurve" : drinkCurve})
-<<<<<<< HEAD
-//        console.log("----------")
-//        console.log(drinkList.get(0).drinkCurve.time)
-//        console.log("----------")
-=======
->>>>>>> master
+
         // listan maste sorteras pa klockslag, finns det inget snabbsatt att gora det pa? typ drinkList.sort(time)
         calculateHistory(drinkList)
-        dumpToFile()
+        console.log(alcLevelHistory)
+        for(var x = 0 ; x < alcLevelHistory.count;x++){
+            console.log(alcLevelHistory.get(x).time + "," + alcLevelHistory.get(x).bac )
+        }
+
+//        dumpToFile()
 
     }
 
     function dumpToFile() {
         /// write to file
-        var txtFile = "c:\Users\erikb\Documents\TMP\dump.txt";
-        var s = "";
-        for(var x = 0 ; x < alcLevelHistory.count;x++) {
-            s+=',' + String(alcLevelHistory.get(x).bac)
-        }
+//        var txtFile = "c:\Users\erikb\Documents\TMP\dump.txt";
+//        var s = "";
+//        for(var x = 0 ; x < alcLevelHistory.count;x++) {
+//            s+=',' + String(alcLevelHistory.get(x).bac)
+//        }
 //        console.log(s)
-        const fs = require('fs');
+//        const fs = require('fs');
 
 
 //        fs.writeFile('/Users/joe/test.txt', s, err => {
@@ -118,9 +115,6 @@ ApplicationWindow {
         var drinkCurve =[]
         var now = dateToMin(new Date())
         var end = now+24*60 // 24 timmar fran nu
-//        console.log(now)
-//        console.log(end)
-//        console.log(selectedDrinkStart)
         var t
         for (t = selectedDrinkStart ; t < end; t++) {
             var drinkingPeriod = t - selectedDrinkStart // i minuter
@@ -134,13 +128,13 @@ ApplicationWindow {
 
             var WT // body weight in kg
             if (unitSystem==="US"){
-                WT = Variable.weight*0.453592
+                WT = variable.weight*0.453592
             }
             else {
-                WT = Variable.weight
+                WT = variable.weight
             }
 
-            var bac = alcMassScaled/(Variable.bodyWaterConstant*WT)
+            var bac = 100*alcMassScaled/(variable.bodyWaterConstant*WT)
             drinkCurve.push({"time":t, "bac":bac})
         }
 
@@ -150,30 +144,15 @@ ApplicationWindow {
 
 
 
-    function widmark(alcMass,drinkingPeriod) {
-        var WT // body weight in kg
-        if (unitSystem==="US"){
-            WT = profileWeight*0.453592
-        }
-        else {
-            WT = profileWeight
-        }
-
-        var bac = alcMass/(bodyWaterConstant*WT)-metabolismRate*drinkingPeriod/60
-
-        return {bac}
-
-
-    }
 
 
     function calculateHistory(drinkList) {
+        alcLevelHistory.clear()
         var startOfPeriod = drinkList.get(0).time
         var endOfPeriod = dateToMin(new Date()) + 24*60 //plussar pa 24 timmar
-
+        console.log(drinkList.get(0).drinkCurve.get(0).time)
         for (var n = startOfPeriod ; n < endOfPeriod;n++) { //loopar pa minuter sedan startOfPeriod
             var bacTmp = 0
-
             for(var x = 0 ; x < drinkList.count;x++) { // loopar pa drinkList
                 var last = drinkList.get(x).drinkCurve.count-1
                 if (n >= drinkList.get(x).drinkCurve.get(0).time && n<= drinkList.get(x).drinkCurve.get(last).time) {
@@ -184,11 +163,11 @@ ApplicationWindow {
                     }
                 }
             }
-            var bacTot = bacTmp - Variable.metabolismRate*n/60
-            console.log(bacTmp)
-
+            var bacTot = bacTmp - variable.metabolismRate*(n-startOfPeriod)/60
+            if (bacTot<0) bacTot = 0
             alcLevelHistory.append({"time":n, "bac":bacTot})
         }
+
 
     }
 
@@ -255,28 +234,21 @@ ApplicationWindow {
 //    }
 
     function convertToMass(size,perc,unitSystem){
-        // converts to alcmass in gram
+        // converts to alcmass in kg
         var alcMass
         var volym // ml
         var volym_ethanol
-        var density_ethanol = 0.789 // gram per ml
+        var density_ethanol = 789 // kg / m3
 
         if (unitSystem === "US") {
-            volym = size*29.5735
+            volym = size*29.5735/1000000
         }
         else{
             volym = size
         }
 
         volym_ethanol = volym * perc/100 // ml
-        alcMass = volym_ethanol * density_ethanol // gram
-//        console.log('===convertToMass===')
-//        console.log(volym)
-//        console.log(perc)
-//        console.log(volym_ethanol)
-//        console.log(alcMass)
-//        console.log('==========')
-
+        alcMass = volym_ethanol * density_ethanol // kg
         return alcMass
     }
 

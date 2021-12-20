@@ -18,10 +18,10 @@ Item {
     }
     property real bodyWaterConstant : {
         if(isMan) {
-            0.58
+            0.68
         }
         else {
-            0.49
+            0.55
         }
     }
 
