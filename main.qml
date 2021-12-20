@@ -62,9 +62,12 @@ ApplicationWindow {
         console.log(drinkType)
         var drinkCurve = calculateCurve(size,perc,selectedDrinkStart,drinkType,alcMass)
         drinkList.append({"size": size, "perc": perc, "time": selectedDrinkStart, "drinkType" : drinkType, "alcMass" : alcMass,"drinkCurve" : drinkCurve})
+<<<<<<< HEAD
 //        console.log("----------")
 //        console.log(drinkList.get(0).drinkCurve.time)
 //        console.log("----------")
+=======
+>>>>>>> master
         // listan maste sorteras pa klockslag, finns det inget snabbsatt att gora det pa? typ drinkList.sort(time)
         calculateHistory(drinkList)
         dumpToFile()
