@@ -15,7 +15,8 @@ ApplicationWindow {
     title: qsTr("Kastrull")
 
     property alias drinkList: drinkList
-    property alias alcLevelHistory: drinkList
+//    property alias intakeCurve: intakeCurve
+//    property alias alcLevelHistory: alcLevelHistory
 
     Variable {
         id: variable
@@ -23,9 +24,10 @@ ApplicationWindow {
 
     //variables
     property real alcLevel: 0
+    property real bacStart: 0
     property bool alcLevelIsRising: true
-
-
+    property variant intakeCurve: []
+    property variant alcLevelHistory: []
     property string unitSystem : "US"
     property string sizeUnit: {
         if(unitSystem == "US"){
@@ -49,26 +51,61 @@ ApplicationWindow {
         // format: ListElement {size: [int]; perc: [real]; time: [timestamp]; drinkType: [int]}
     }
 
-    ListModel {
-        id: alcLevelHistory
-        // format: ListElement {bac: [real]; time: [timestamp]}
-    }
+//    ListModel {
+//        id: c
+//        // format: ListElement {bac: [real]; time: [timestamp]}
+//    }
+
+//    ListModel {
+//        id: intakeCurve
+//        // format: ListElement {bac: [real]; time: [timestamp]}
+//    }
 
     //functions
     function addBeverage(size, perc, selectedDrinkStart,drinkType,unitSystem) {
         var alcMass = convertToMass(size,perc,unitSystem)
         var drinkCurve = calculateCurve(size,perc,selectedDrinkStart,drinkType,alcMass)
-        drinkList.append({"size": size, "perc": perc, "time": selectedDrinkStart, "drinkType" : drinkType, "alcMass" : alcMass,"drinkCurve" : drinkCurve})
+        drinkList.append({"size": size, "perc": perc, "time": selectedDrinkStart, "drinkType" : drinkType, "alcMass" : alcMass})
+        sumUpIntake(drinkCurve)
+        calculateHistory()
+        calculatefylla()
+    }
 
-        // listan maste sorteras pa klockslag, finns det inget snabbsatt att gora det pa? typ drinkList.sort(time)
-        calculateHistory(drinkList)
-        console.log(alcLevelHistory)
-        for(var x = 0 ; x < alcLevelHistory.count;x++){
-            console.log(alcLevelHistory.get(x).time + "," + alcLevelHistory.get(x).bac )
+    function update() {
+        sumUpIntake([])
+        calculateHistory()
+        calculatefylla()
+
+    }
+
+    function sumUpIntake(drinkCurve) {
+        var now = dateToMin(new Date())
+        var before = now-24*60
+        var end = now+24*60 // 24 timmar fran nu
+        var bac = 0
+        var newIntakeCurve =[]
+        var bacPrev = 0
+        for(var c = before ; c < end; c++) {
+            var bac1 = findTimeStamp(c,drinkCurve)
+            var bac2 = findTimeStamp(c,intakeCurve)
+            bac = bac1+bac2
+            if((bac) < bacPrev){
+                bac = bacPrev
+            }
+            bacPrev = bac
+            newIntakeCurve.push({"time":c, "bac":bac})
         }
-
-//        dumpToFile()
-
+        intakeCurve = newIntakeCurve
+    }
+    function findTimeStamp(c,curve){
+        var bac = 0
+        for(var x = 0; x < curve.length; x++) {
+            if (curve[x].time === c) {
+                bac = curve[x].bac
+                break
+            }
+        }
+        return bac
     }
 
     function dumpToFile() {
@@ -78,7 +115,7 @@ ApplicationWindow {
 //        for(var x = 0 ; x < alcLevelHistory.count;x++) {
 //            s+=',' + String(alcLevelHistory.get(x).bac)
 //        }
-//        console.log(s)
+
 //        const fs = require('fs');
 
 
@@ -112,7 +149,7 @@ ApplicationWindow {
             consumptionRate = 20 //min
         }
 
-        var drinkCurve =[]
+        var drinkCurve =[];
         var now = dateToMin(new Date())
         var end = now+24*60 // 24 timmar fran nu
         var t
@@ -137,8 +174,7 @@ ApplicationWindow {
             var bac = 100*alcMassScaled/(variable.bodyWaterConstant*WT)
             drinkCurve.push({"time":t, "bac":bac})
         }
-
-    return drinkCurve
+        return drinkCurve
     }
 
 
@@ -146,30 +182,48 @@ ApplicationWindow {
 
 
 
-    function calculateHistory(drinkList) {
-        alcLevelHistory.clear()
-        var startOfPeriod = drinkList.get(0).time
-        for (var i = 1; i < drinkList.count; i++) {
-            if (drinkList.get(i).time < startOfPeriod) startOfPeriod = drinkList.get(i).time
-        }
-        var endOfPeriod = dateToMin(new Date()) + 24*60 //plussar pa 24 timmar
-        console.log(drinkList.get(0).drinkCurve.get(0).time)
-        for (var n = startOfPeriod ; n < endOfPeriod;n++) { //loopar pa minuter sedan startOfPeriod
-            var bacTmp = 0
-            for(var x = 0 ; x < drinkList.count;x++) { // loopar pa drinkList
-                var last = drinkList.get(x).drinkCurve.count-1
-                if (n >= drinkList.get(x).drinkCurve.get(0).time && n<= drinkList.get(x).drinkCurve.get(last).time) {
-                    for(var y = 0 ; y < drinkList.get(x).drinkCurve.count;y++){
-                        if (n===drinkList.get(x).drinkCurve.get(y).time) {
-                            bacTmp += drinkList.get(x).drinkCurve.get(y).bac
-                        }
-                    }
-                }
+    function calculateHistory() {
+        var startOfPeriod = intakeCurve[0].time
+        var newAlcLevelHistory = []
+        newAlcLevelHistory.push({"time":startOfPeriod, "bac":bacStart})
+
+        var bacPrev = bacStart
+        for (var n = 1 ; n < (intakeCurve.length);n++){
+            var bac = 0
+            if (bacPrev === 0){
+                bac = intakeCurve[n].bac - intakeCurve[n-1].bac
+                bacPrev = bac
             }
-            var bacTot = bacTmp - variable.metabolismRate*(n-startOfPeriod)/60
-            if (bacTot<0) bacTot = 0
-            alcLevelHistory.append({"time":n, "bac":bacTot})
+            else {
+                bac = bacPrev + (intakeCurve[n].bac - intakeCurve[n-1].bac) - variable.metabolismRate*(intakeCurve[n].time-intakeCurve[n-1].time)/60
+                if (bac<0) bac = 0
+                bacPrev = bac
+            }
+            alcLevelHistory.push({"time":intakeCurve[n].time, "bac":bac})
+//            console.log(intakeCurve[n].time+","+bac)
         }
+
+
+//        var startOfPeriod = drinkList.get(0).time
+
+//        var endOfPeriod = dateToMin(new Date()) + 24*60 //plussar pa 24 timmar
+//        for (var n = startOfPeriod ; n < endOfPeriod;n++) { //loopar pa minuter sedan startOfPeriod
+//            var bacTmp = 0
+//            for(var x = 0 ; x < drinkList.count;x++) { // loopar pa drinkList
+//                var last = drinkList.get(x).drinkCurve.count-1
+//                if (n >= drinkList.get(x).drinkCurve.get(0).time && n<= drinkList.get(x).drinkCurve.get(last).time) {
+//                    for(var y = 0 ; y < drinkList.get(x).drinkCurve.count;y++){
+//                        if (n===drinkList.get(x).drinkCurve.get(y).time) {
+//                            bacTmp += drinkList.get(x).drinkCurve.get(y).bac
+//                        }
+//                    }
+//                }
+//            }
+//            var bacTot = bacTmp - variable.metabolismRate*(n-startOfPeriod)/60
+//            if (bacTot<0) bacTot = 0
+//            alcLevelHistory.append({"time":n, "bac":bacTot})
+
+//        }
 
 
     }
@@ -178,10 +232,30 @@ ApplicationWindow {
         //spara
     }
 
+    function calculatefylla(){
+        console.log('lll')
+        var now = 2*24*60/2-1
+        alcLevel = alcLevelHistory[now].bac.toFixed(3)
+//        console.log(alcLevel)
+//        console.log(alcLevelHistory[now].bac.toFixed(3))
+//        for (var x = 0 ; x < alcLevelHistory.length;x++) {
+//            console.log(x + "," + alcLevelHistory[x].bac)
+//        }
+
+        if(alcLevel < alcLevelHistory[now+1].bac){
+            alcLevelIsRising = true
+            }
+        else {
+            alcLevelIsRising = false
+            }
+
+
+    }
+
     Timer {
         running: true
-        interval: 60000
-        //onTriggered: calculatefylla()
+        interval: 6000
+        onTriggered: calculatefylla()
     }
 
     Colors {
@@ -196,12 +270,7 @@ ApplicationWindow {
 //        var consumtionArray = []
 
 
-//        for(var n = 0 ; n < drinkList.count;n++){
-////            console.log(drinkList.get(n).size)
-////            console.log(drinkList.get(n).perc)
-////            console.log(drinkList.get(n).time)
-////            console.log(drinkList.get(n).drinkType)
-////            console.log(metabolismRate)
+
 
 //            var consumptionRate
 //            if (drinkList.drinkType === "Beer"){
