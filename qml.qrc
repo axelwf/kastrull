@@ -12,5 +12,6 @@
         <file>qml/components/ShotDialogue.qml</file>
         <file>qml/components/CocktailDialogue.qml</file>
         <file>qml/data/Variable.qml</file>
+        <file>qml/components/ProfileSettings.qml</file>
     </qresource>
 </RCC>

@@ -1,6 +1,7 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
+import Qt.labs.settings 1.1
 import "./qml/mainView"
 import "./qml/data"
 
@@ -15,11 +16,18 @@ ApplicationWindow {
     title: qsTr("Kastrull")
 
     property alias drinkList: drinkList
-//    property alias intakeCurve: intakeCurve
-//    property alias alcLevelHistory: alcLevelHistory
+    property alias alcLevelHistory: alcLevelHistory
 
     Variable {
         id: variable
+    }
+
+    Settings {
+        id: settings
+
+        property bool male: true
+        property int weight: 80
+        property bool metricUnits: true
     }
 
     //variables
@@ -28,7 +36,7 @@ ApplicationWindow {
     property bool alcLevelIsRising: true
     property variant intakeCurve: []
     property variant alcLevelHistory: []
-    property string unitSystem : "US"
+    property string unitSystem : settings.metricUnits? "Metric": "US" //"US"
     property string sizeUnit: {
         if(unitSystem == "US"){
             "oz"
@@ -342,7 +350,9 @@ ApplicationWindow {
                 }
                 ToolButton {
                     text: qsTr("⋮")
-                    onClicked: menu.open()
+                    onClicked: {
+                        if (stack.depth < 2) stack.push("qrc:/qml/components/ProfileSettings.qml")
+                    }
                     font.pixelSize: 44
                 }
             }

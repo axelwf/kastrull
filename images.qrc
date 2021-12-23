@@ -3,5 +3,6 @@
         <file>images/beer.PNG</file>
         <file>images/wine.PNG</file>
         <file>images/shot.PNG</file>
+        <file>images/settings.png</file>
     </qresource>
 </RCC>
