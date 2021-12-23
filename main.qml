@@ -16,7 +16,7 @@ ApplicationWindow {
     title: qsTr("Kastrull")
 
     property alias drinkList: drinkList
-    property alias alcLevelHistory: alcLevelHistory
+    //property alias alcLevelHistory: alcLevelHistory
 
     Variable {
         id: variable
@@ -31,9 +31,10 @@ ApplicationWindow {
     }
 
     //variables
-    property real alcLevel: 0
+    property real alcLevel: 0 //alcLevelHistory.length < 60*24? 0: alcLevelHistory[60*24+20].bac
     property real bacStart: 0
     property bool alcLevelIsRising: true
+    property int nowIndex: 0
     property variant intakeCurve: []
     property variant alcLevelHistory: []
     property string unitSystem : settings.metricUnits? "Metric": "US" //"US"
@@ -48,10 +49,15 @@ ApplicationWindow {
 
     property int drinkTimeBeer: 30 //min
 
-
-//    property var now : new Date()
-
-
+    Timer {
+        running: true
+        interval: 60000
+        onTriggered: {
+            console.log("updating")
+            calculatefylla()
+        }
+        repeat: true
+    }
 
     //data structures
     ListModel {
@@ -74,6 +80,7 @@ ApplicationWindow {
         var alcMass = convertToMass(size,perc,unitSystem)
         var drinkCurve = calculateCurve(size,perc,selectedDrinkStart,drinkType,alcMass)
         drinkList.append({"size": size, "perc": perc, "time": selectedDrinkStart, "drinkType" : drinkType, "alcMass" : alcMass})
+        console.log("drinkList now contains " + drinkList.count + " beverage(s)")
         sumUpIntake(drinkCurve)
         calculateHistory()
         calculatefylla()
@@ -83,7 +90,18 @@ ApplicationWindow {
         sumUpIntake([])
         calculateHistory()
         calculatefylla()
+    }
 
+    function findNowIndex() {
+        var now = dateToMin(new Date())
+        //var nowIndex = 24*60-1
+        console.log("now is: " + now)
+        var diff = alcLevelHistory[nowIndex].time - now
+        console.log("diff is: " + diff)
+        nowIndex = nowIndex - diff
+        var nowTime = alcLevelHistory[nowIndex].time
+        console.log("found time is: " + nowTime)
+        console.log("now index is: " + nowIndex)
     }
 
     function sumUpIntake(drinkCurve) {
@@ -241,29 +259,28 @@ ApplicationWindow {
     }
 
     function calculatefylla(){
-        console.log('lll')
+        //console.log('lll')
+        console.log("alcLevelHistory length is: " + alcLevelHistory.length)
+        var nownow = findNowIndex()
         var now = 2*24*60/2-1
-        alcLevel = alcLevelHistory[now].bac.toFixed(3)
-//        console.log(alcLevel)
-//        console.log(alcLevelHistory[now].bac.toFixed(3))
-//        for (var x = 0 ; x < alcLevelHistory.length;x++) {
-//            console.log(x + "," + alcLevelHistory[x].bac)
-//        }
+        var alc = 0
+        if (alcLevelHistory.length > 0) {
+            alc = alcLevelHistory[now].bac*100
+            alcLevel = alc.toFixed(2)
+            console.log(alcLevel)
+    //        console.log(alcLevel)
+    //        console.log(alcLevelHistory[now].bac.toFixed(3))
+    //        for (var x = 0 ; x < alcLevelHistory.length;x++) {
+    //            console.log(x + "," + alcLevelHistory[x].bac)
+    //        }
 
-        if(alcLevel < alcLevelHistory[now+1].bac){
-            alcLevelIsRising = true
-            }
-        else {
-            alcLevelIsRising = false
-            }
-
-
-    }
-
-    Timer {
-        running: true
-        interval: 6000
-        onTriggered: calculatefylla()
+            if (alcLevel < alcLevelHistory[now+1].bac){
+                alcLevelIsRising = true
+                }
+            else {
+                alcLevelIsRising = false
+                }
+        }
     }
 
     Colors {

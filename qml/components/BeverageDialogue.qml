@@ -235,7 +235,7 @@ Grid {
                 var today = new Date()
                 var date_ = new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours()+Math.ceil(selectedTimeOffset/4), today.getMinutes()+(selectedTimeOffset*15 - Math.ceil(selectedTimeOffset/4)*60), today.getSeconds())
                 selectedDrinkStart = dateToMin (date_)
-                console.log(selectedDrinkStart)
+                //console.log(selectedDrinkStart)
                 main.addBeverage(selectedSize, selectedAlcPerc, selectedDrinkStart, drinkTypeIndex, "US")
                 stack.pop()
             }
